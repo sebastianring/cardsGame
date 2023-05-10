@@ -2,6 +2,8 @@ package main
 
 import "fmt"
 
+// import "fmt"
+
 func main() {
 	d := newDeck()
 	p := player{
@@ -10,8 +12,7 @@ func main() {
 
 	d.deal(3, &p)
 
-	allCards := d.getCards()
-	for _, val := range allCards {
-		fmt.Println(val)
-	}
+	saveString := d.toBytes()
+	fmt.Printf("The variable is of type %T and this long: %d \n", saveString, len(saveString))
+	fmt.Println(saveString)
 }
