@@ -1,14 +1,9 @@
 package main
 
 import (
-	"crypto/rand"
 	"fmt"
+	"math/rand"
 )
-
-type player struct {
-	name  string
-	cards []card
-}
 
 type deck struct {
 	cards []card
@@ -36,10 +31,10 @@ func newDeck() deck {
 func (d *deck) deal(numberOfCards int, p *player) {
 	length := len(d.cards) - 1
 	for i := 0; i < numberOfCards; i++ {
-		lol, randomCardInt := rand.Intn(length - i)
+		randomCardInt := rand.Intn(length - i)
 		cardToBeDealt := d.cards[randomCardInt]
 		p.cards = append(p.cards, cardToBeDealt)
-		d.cards = append(d.cards[:randomCardInt], d.cards[randomCardInt+1:])
+		// d.cards = append(d.cards[:randomCardInt], d.cards[randomCardInt:])
 	}
 }
 
