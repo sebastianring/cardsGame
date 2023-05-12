@@ -18,7 +18,7 @@ func main() {
 	// fmt.Println(saveString)
 	d.writeCardsToFile("myfile.txt")
 
-	d2 := loadDeckFromFile("myfile.txt")
+	d2 := newDeckFromFile("myfil.txt")
 	fmt.Println(d2.cards)
 
 }

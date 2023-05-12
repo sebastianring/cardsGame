@@ -37,31 +37,42 @@ func newDeck() *deck {
 }
 
 // ------ init deck from file
-func loadDeckFromFile(fileName string) *deck {
+func newDeckFromFile(fileName string) *deck {
+	var tempDeck deck
+
 	if fileName == "" {
-		fmt.Println("You need to enter a filename, exiting.")
+		// fmt.Println("You need to enter a filename, exiting.")
+		return &tempDeck
 	}
 
 	file, err := os.ReadFile("data/" + fileName)
 
 	if err != nil {
 		fmt.Println(err)
+		os.Exit(1)
 	}
 
-	var tempDeck deck
 	startpos := 0
 	for i, data := range file {
 		if data == 44 {
 			dataslice := file[startpos:i]
 			var val int
-			// fmt.Printf("Startpos: %d, current i: %d data slice: %d \n", startpos, i, dataslice)
 
 			// Some values are stored in two bytes instead of one (when value of card > 10), so then we need to do some extra convertion
-			if i-startpos > 2 {
+			datasize := i - startpos
+
+			if datasize > 2 {
 				val, err = strconv.Atoi(string(dataslice[1:]))
+
 				if err != nil {
 					fmt.Println(err)
+					fmt.Println("Could not convert to integer")
+					os.Exit(1)
 				}
+			} else if datasize > 3 {
+				// if its larger than two, the save file is not correctly formatted.
+				fmt.Println("Corrupt file")
+				os.Exit(1)
 			} else {
 				val = int(dataslice[1])
 			}
@@ -112,10 +123,22 @@ func (d *deck) addCard(suit string, val uint8) {
 		14: "Ace",
 	}
 
+	value, ok := valueMap[val]
+	if !ok {
+		// fmt.Println("Error - could not find value in map")
+		return
+	}
+
+	suitString, ok := suitMap[suit]
+	if !ok {
+		// fmt.Println("Error - could not find suit in map")
+		return
+	}
+
 	a := card{
 		suit:  suit,
 		value: val,
-		desc:  valueMap[val] + " of " + suitMap[suit],
+		desc:  value + " of " + suitString,
 	}
 
 	d.cards = append(d.cards, a)
@@ -178,7 +201,7 @@ func (d *deck) toBytes() []byte {
 // ----- save all cards to a txt-file
 func (d *deck) writeCardsToFile(fileName string) {
 	if fileName == "" {
-		fmt.Println("You need to enter a filename, exiting.")
+		// fmt.Println("You need to enter a filename, exiting.")
 		return
 	}
 
